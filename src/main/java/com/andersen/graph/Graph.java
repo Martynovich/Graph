@@ -3,9 +3,9 @@ import org.apache.log4j.Logger;
 import java.util.*;
 
 public class Graph {
-	Map<Integer, ArrayList<VertexMatrixElement>> vertexMatrix;
-	final ArrayList<Edge> edges;
-	final static Logger logger = Logger.getLogger(Graph.class);
+	final  Map<Integer, ArrayList<VertexMatrixElement>> vertexMatrix;
+	private final ArrayList<Edge> edges;
+	private final static Logger logger = Logger.getLogger(Graph.class);
 	
 	//Create object Graph from Builder.
 	public Graph(Builder builder){
@@ -85,7 +85,7 @@ public class Graph {
 		int currentVertex = finishVertex;
 		ArrayList<Edge> edgeWayFromFinishToStart = new ArrayList<Edge>();
 		VertexMatrixElement currentVertexMatrixElement = findShortestWayFromSartToCurrent(finishVertex);
-		logger.warn("Edges quantiti to start vertex = " + currentVertexMatrixElement.getEdgesQuantity());
+		logger.info("Edges quantiti to start vertex = " + currentVertexMatrixElement.getEdgesQuantity());
 		if(!currentVertexMatrixElement.getEdgeToPreviousNearestVertex().isEmpty()){
 		edgeWayFromFinishToStart.add(currentVertexMatrixElement.getEdgeToPreviousNearestVertex());
 		}else{

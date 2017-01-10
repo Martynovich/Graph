@@ -29,6 +29,7 @@ public class GraphTest {
 				edgesLinkingStartAndFinishVertexes.get(2)[0] == 3 && edgesLinkingStartAndFinishVertexes.get(2)[1] == 4 &&
 				edgesLinkingStartAndFinishVertexes.get(2)[2] == 5 && edgesLinkingStartAndFinishVertexes.get(3)[0] == 4 &&
 				edgesLinkingStartAndFinishVertexes.get(3)[1] == 5 && edgesLinkingStartAndFinishVertexes.get(3)[2] == 4);
+		
 	}
 
 }

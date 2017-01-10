@@ -16,12 +16,7 @@ public class VertexMatrixElement {
 	void setDistanñeFromStartVertex(int distanñeFromStartVertex) {
 		this.distanñeFromStartVertex = distanñeFromStartVertex;
 	}
-	/*int getFinishVertex() {
-		return finishVertex;
-	}
-	void setFinishVertex(int finishVertex) {
-		this.finishVertex = finishVertex;
-	}*/
+	
 	int getPreviousNearestVertex() {
 		return PreviousNearestVertex;
 	}

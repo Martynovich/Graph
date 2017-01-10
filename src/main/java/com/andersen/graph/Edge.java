@@ -36,6 +36,4 @@ class Edge {
 		String s = "(" + startVertex + " " + finishVertex + " " + length + ")";
 		return s;
 	}
-	
-
 }
