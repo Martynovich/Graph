@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 public class MatrixElement {
 	 private int distanñeFromStartVertex = 1000*1000;
-	 //private Edge edgeToPreviousNearestVertex = new Edge(0, 0, 0);
 	 private int previousNearestVertex = 1000*1000;
 	 private int edgesQuantity;
 	 private ArrayList<Edge> pathToStart = new ArrayList<Edge>();

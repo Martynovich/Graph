@@ -37,7 +37,7 @@ public class Graph {
 			Integer edge[] = {startVertexInt, finishVertexInt, length};
 			shortestPathIntArr.add(edge);
 		}
-		if(isNegativeCicle()){
+		if(isNegativeCycle()){
 			throw new NegativeCicleException("Is negativ cicle in graph", shortestPathIntArr);
 		}
 		return shortestPathIntArr;
@@ -105,11 +105,11 @@ public class Graph {
 		return nearestToStartVertexMatrixElement;
 	}
 	
-	//Check presence of negative cicle.
-	private boolean isNegativeCicle(){
+	//Check presence of negative cycle.
+	private boolean isNegativeCycle(){
 		for(Map.Entry<Integer, ArrayList<MatrixElement>> entry : matrix.entrySet()){
-			int lastElement = entry.getValue().get(edges.size()).getDistanñeFromStartVertex();
-			int penultElement = entry.getValue().get(edges.size()-1).getDistanñeFromStartVertex();
+			int lastElement = entry.getValue().get(matrix.size()).getDistanñeFromStartVertex();
+			int penultElement = entry.getValue().get(matrix.size()-1).getDistanñeFromStartVertex();
 			if(lastElement < penultElement){
 				return true;
 			}
