@@ -1,135 +1,131 @@
 package main.java.com.andersen.graph;
 import org.apache.log4j.Logger;
+
+import main.java.com.andersen.exceptions.NegativeCicleException;
+
 import java.util.*;
 
 public class Graph {
-	final  Map<Integer, ArrayList<VertexMatrixElement>> vertexMatrix;
+	private final  Map<Integer, ArrayList<MatrixElement>> matrix;
 	private final ArrayList<Edge> edges;
 	private final static Logger logger = Logger.getLogger(Graph.class);
 	
 	//Create object Graph from Builder.
 	public Graph(Builder builder){
-		vertexMatrix = builder.vertexMatrix;
+		matrix = builder.matrix;
 		edges = builder.edges;
 	}
+	
 	//Return shortest distance from vertex to vertex
 	public int getShortestLength(int startVertex, int finishVertex){
-		initVertexMatrix(startVertex);
-		findAllShortestDistInVertMatr(startVertex);
+		initMatrix(startVertex);
+		findAllShortestDistInMatr(startVertex);
 		int shortestLength = findShortestWayFromSartToCurrent(finishVertex).getDistanñeFromStartVertex();
 		return shortestLength;
 	}	
+	
 	//Return edges list of shortest path
-	public ArrayList<Integer[]> getShortestPath(int startVertex, int finishVertex){
-		initVertexMatrix(startVertex);
-		findAllShortestDistInVertMatr(startVertex);
-		ArrayList<Edge> edgesFromStartToFinish = findShortestWayFromSartToFinish(startVertex, finishVertex);
-		ArrayList<Integer[]> edgesFromStartToFinishArray = new ArrayList<Integer[]>();
-		Collections.reverse(edgesFromStartToFinish);
-		for(int i = 0; i < edgesFromStartToFinish.size(); i++){
-			Integer[] edgeCopy = new Integer[3];
-			edgeCopy[0] = edgesFromStartToFinish.get(i).getStartVertex();
-			edgeCopy[1] = edgesFromStartToFinish.get(i).getFinishVertex();
-			edgeCopy[2] = edgesFromStartToFinish.get(i).getLength();
-			edgesFromStartToFinishArray.add(edgeCopy);
+	public ArrayList<Integer[]> getShortestPath(int startVertex, int finishVertex) throws NegativeCicleException{
+		initMatrix(startVertex);
+		findAllShortestDistInMatr(startVertex);
+		ArrayList<Edge> shortestPath = findShortestWayFromSartToCurrent(finishVertex).getPathToStart();
+		ArrayList<Integer[]> shortestPathIntArr = new ArrayList<Integer[]>();
+		for(int i = 0 ; i < shortestPath.size() ; i++){
+			Integer startVertexInt = shortestPath.get(i).getStartVertex();
+			Integer finishVertexInt = shortestPath.get(i).getFinishVertex();
+			Integer length = shortestPath.get(i).getLength();
+			Integer edge[] = {startVertexInt, finishVertexInt, length};
+			shortestPathIntArr.add(edge);
 		}
-		
-		
-		return edgesFromStartToFinishArray;
+		if(isNegativeCicle()){
+			throw new NegativeCicleException("Is negativ cicle in graph", shortestPathIntArr);
+		}
+		return shortestPathIntArr;
 	}
+
 	//Initialize matrix VertexMatrix 
-	private void initVertexMatrix(int startVertex){
+	private void initMatrix(int startVertex){
 		logger.info("Init matrix, start vertex:" + startVertex);
-		for(Map.Entry<Integer, ArrayList<VertexMatrixElement>> entry : vertexMatrix.entrySet()){
-			ArrayList<VertexMatrixElement> matrixRaw = entry.getValue();
+		for(Map.Entry<Integer, ArrayList<MatrixElement>> entry : matrix.entrySet()){
+			ArrayList<MatrixElement> matrixRaw = entry.getValue();
 			matrixRaw.clear();
-			for(int i = 0 ; i < vertexMatrix.size();i++){
-				VertexMatrixElement vertexMatrixElement = new VertexMatrixElement(i);
-				//logger.warn("Edges quantiti to start vertex = " + vertexMatrixElement.getEdgesQuantity());
-				matrixRaw.add(i, vertexMatrixElement);
+			for(int i = 0 ; i <= matrix.size();i++){//Add one repeat
+				MatrixElement matrixElement = new MatrixElement(i);
+				matrixRaw.add(i, matrixElement);
 			}
 		}
-		VertexMatrixElement startVertexMatrixElement = vertexMatrix.get(startVertex).get(0);
-		startVertexMatrixElement.setDistanñeFromStartVertex(0);
-		startVertexMatrixElement.setPreviousNearestVertex(startVertex);
+		MatrixElement startMatrixElement = matrix.get(startVertex).get(0);
+		startMatrixElement.setDistanñeFromStartVertex(0);
 	}
-	//Fill matrix with shortest distances and edges between vertexes.
-	private void findAllShortestDistInVertMatr(int startVertex){
-		logger.info("Filling matrix with shorted distances to start vertex and linking edges.Start vertex - " + startVertex);
-		for(int i = 1 ; i < vertexMatrix.size() ; i++){
+	
+	//Fill matrix with shortest distances and shortest paths between start and other vertexes.
+	private void findAllShortestDistInMatr(int startVertex){
+		logger.info("Filling matrix with shortest distances to start vertex and linking edges.Start vertex - " + startVertex);
+		for(int i = 1 ; i <= matrix.size() ; i++){//Add one repeat
 			for(Edge edge : edges){
-				VertexMatrixElement currentElement = vertexMatrix.get(edge.getFinishVertex()).get(i);
-				VertexMatrixElement previousElement = vertexMatrix.get(edge.getStartVertex()).get(i-1);
-				VertexMatrixElement currentRawPreviousElement = vertexMatrix.get(edge.getFinishVertex()).get(i-1);
-				
+				MatrixElement currentElement = matrix.get(edge.getFinishVertex()).get(i);
+				MatrixElement previousElement = matrix.get(edge.getStartVertex()).get(i-1);
+				MatrixElement currentRawPreviousElement = matrix.get(edge.getFinishVertex()).get(i-1);
+				ArrayList<Edge> newPathToStart;
 				if(currentElement.getDistanñeFromStartVertex() > 
-						previousElement.getDistanñeFromStartVertex() + edge.getLength()&&
+						previousElement.getDistanñeFromStartVertex() + edge.getLength() && 
 						previousElement.getDistanñeFromStartVertex()!=1000*1000){
 					currentElement.setDistanñeFromStartVertex(previousElement.getDistanñeFromStartVertex() + edge.getLength());
 					currentElement.setPreviousNearestVertex(edge.getStartVertex());	
-					currentElement.setEdgeToPreviousNearestVertex(edge);
 					currentElement.setEdgesQuantity(previousElement.getEdgesQuantity() + 1);
+					newPathToStart = new ArrayList<Edge>(previousElement.getPathToStart());
+					newPathToStart.add(edge);
+					currentElement.setPathToStart(newPathToStart);
 				}
-				if(currentElement.getDistanñeFromStartVertex() >= currentRawPreviousElement.getDistanñeFromStartVertex()){
+				if(currentElement.getDistanñeFromStartVertex() >= currentRawPreviousElement.getDistanñeFromStartVertex() && currentRawPreviousElement.getDistanñeFromStartVertex() != 1000*1000){
 					currentElement.setDistanñeFromStartVertex(currentRawPreviousElement.getDistanñeFromStartVertex());
 					currentElement.setPreviousNearestVertex(currentRawPreviousElement.getPreviousNearestVertex());
-					currentElement.setEdgeToPreviousNearestVertex(currentRawPreviousElement.getEdgeToPreviousNearestVertex());
-					currentElement.setEdgesQuantity(currentRawPreviousElement.getEdgesQuantity());
+					newPathToStart = new ArrayList<Edge>(currentRawPreviousElement.getPathToStart());
+					currentElement.setPathToStart(newPathToStart);
 				}
+			}
+			if(matrix.get(startVertex).get(i).getDistanñeFromStartVertex() >= matrix.get(startVertex).get(i-1).getDistanñeFromStartVertex()){
+				matrix.get(startVertex).get(i).setDistanñeFromStartVertex(matrix.get(startVertex).get(i-1).getDistanñeFromStartVertex());
 			}
 		}	
 	}
-	//Return ArrayList of Edges from finish to start, return empty ArrayList if there is no link between vertexes.
-	private ArrayList<Edge> findShortestWayFromSartToFinish(int startVertex, int finishVertex){
-		logger.info("Searchin for shortest path from " + startVertex + " vertex to " + finishVertex + " vertex");
-		int currentVertex = finishVertex;
-		ArrayList<Edge> edgeWayFromFinishToStart = new ArrayList<Edge>();
-		VertexMatrixElement currentVertexMatrixElement = findShortestWayFromSartToCurrent(finishVertex);
-		logger.info("Edges quantiti to start vertex = " + currentVertexMatrixElement.getEdgesQuantity());
-		if(!currentVertexMatrixElement.getEdgeToPreviousNearestVertex().isEmpty()){
-		edgeWayFromFinishToStart.add(currentVertexMatrixElement.getEdgeToPreviousNearestVertex());
-		}else{
-			edgeWayFromFinishToStart.clear();
-			logger.info("No links between start and finish.");
-			return edgeWayFromFinishToStart;
-		}
-		do{
-			currentVertexMatrixElement = findShortestWayFromSartToCurrent(currentVertexMatrixElement.getEdgeToPreviousNearestVertex().getStartVertex());
-			logger.warn("Edges quantiti to start vertex = " + currentVertexMatrixElement.getEdgesQuantity());
-			edgeWayFromFinishToStart.add(currentVertexMatrixElement.getEdgeToPreviousNearestVertex());	
-			if(currentVertexMatrixElement.getEdgeToPreviousNearestVertex().isEmpty()){				
-				edgeWayFromFinishToStart.clear();
-				logger.info("No links between start and finish.");
-				return edgeWayFromFinishToStart;
-			}			
-		}while(currentVertexMatrixElement.getEdgeToPreviousNearestVertex().getStartVertex() != startVertex);
-		return edgeWayFromFinishToStart;
-	}
+
 	//Find shortest distances from vertex to start vertex and appropriate edge of current vertex.
-	private VertexMatrixElement findShortestWayFromSartToCurrent(int vertexNumber){
+	private MatrixElement findShortestWayFromSartToCurrent(int vertexNumber){
 		logger.info("Searchin for shortest distances between start vertex and " + vertexNumber + " vertex. And correct edge for " + vertexNumber + " vertex");
-		ArrayList<VertexMatrixElement> vertexMatrixRaw = vertexMatrix.get(vertexNumber);
-		VertexMatrixElement nearestToStartVertexMatrixElement = vertexMatrixRaw.get(0);
+		ArrayList<MatrixElement> vertexMatrixRaw = matrix.get(vertexNumber);
+		MatrixElement nearestToStartVertexMatrixElement = vertexMatrixRaw.get(0);
 		Integer minLength = nearestToStartVertexMatrixElement.getDistanñeFromStartVertex();
-		int edgesEquantity = vertexMatrix.size();
 		for(int i = 1 ; i < vertexMatrixRaw.size(); i++){
-			VertexMatrixElement currentVertex = vertexMatrixRaw.get(i);
+			MatrixElement currentVertex = vertexMatrixRaw.get(i);
 			if(currentVertex.getDistanñeFromStartVertex() < minLength){
 				nearestToStartVertexMatrixElement = currentVertex;
 			}
 		}
 		return nearestToStartVertexMatrixElement;
 	}
+	
+	//Check presence of negative cicle.
+	private boolean isNegativeCicle(){
+		for(Map.Entry<Integer, ArrayList<MatrixElement>> entry : matrix.entrySet()){
+			int lastElement = entry.getValue().get(edges.size()).getDistanñeFromStartVertex();
+			int penultElement = entry.getValue().get(edges.size()-1).getDistanñeFromStartVertex();
+			if(lastElement < penultElement){
+				return true;
+			}
+		}
+		return false;
+	}
 
 	//Builder class constructor.
 	public static class Builder {
-		Map<Integer, ArrayList<VertexMatrixElement>> vertexMatrix = 
-				new TreeMap<Integer, ArrayList<VertexMatrixElement>>();
+		Map<Integer, ArrayList<MatrixElement>> matrix = 
+				new TreeMap<Integer, ArrayList<MatrixElement>>();
 		ArrayList<Edge> edges = new ArrayList<Edge>();
 		
 		//Create graph's vertex and add it to Map vertexMatrix as a key.
 		public Builder vertex(int vertexNumber){
-			addVertexToVertexMatrix(vertexNumber);
+			addVertexToMatrix(vertexNumber);
 			return this;
 		}
 		
@@ -139,28 +135,21 @@ public class Graph {
 				logger.info("Ignor for empty edge.");
 				return this;
 			}
-			if(length == 0){
-				logger.info("Ignor for edge without length.");
-				return this;
-			}
 			Edge edge = new Edge(startVertex, finishVertex, length);
 			edges.add(edge);
-			addVertexToVertexMatrix(startVertex);
-			addVertexToVertexMatrix(finishVertex);
+			addVertexToMatrix(startVertex);
+			addVertexToMatrix(finishVertex);
 			return this; 
 		}
 		
-		private void addVertexToVertexMatrix(int vertexNumber){
-			if(!vertexMatrix.containsKey(vertexNumber)){
-				vertexMatrix.put(vertexNumber, new ArrayList<VertexMatrixElement>());
+		private void addVertexToMatrix(int vertexNumber){
+			if(!matrix.containsKey(vertexNumber)){
+				matrix.put(vertexNumber, new ArrayList<MatrixElement>());
 			}
 		}
 		
 		public Graph build(){
 			return new Graph(this);
 		}
-		
-		
-		
 	}
 }
