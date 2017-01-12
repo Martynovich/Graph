@@ -38,9 +38,9 @@ public class Main {
 		} catch (NegativeCycleException e1) {
 			System.out.println(e1.getMessage());
 		}*/
-		Graph graph = new Graph.Builder().edge(1,2,2).edge(1,2,3).edge(2,3,5).edge(2,3,6).edge(3,4,1).build();
-		ArrayList<Integer[]> arr = graph.getShortestPath(1, 4);
-		int a = graph.getShortestLength(1, 4);
+		Graph graph = new Graph.Builder().edge(1,2,1).edge(2,3,2).edge(3,5,3).edge(1,4,2).edge(4,5,4).build();
+		ArrayList<Integer[]> arr = graph.getShortestPath(1, 5);
+		int a = graph.getShortestLength(1, 5);
 		System.out.println(a);
 		System.out.println(arr.isEmpty());
 		for(Integer[] i : arr) {
