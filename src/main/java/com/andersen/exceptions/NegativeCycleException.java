@@ -1,6 +1,6 @@
 package main.java.com.andersen.exceptions;
 
-public class NegativeCicleException extends Exception {
+public class NegativeCycleException extends Exception {
 	
 	private Object shortestPath;
 	 
@@ -8,7 +8,7 @@ public class NegativeCicleException extends Exception {
     	return shortestPath;
     }
     
-    public NegativeCicleException(String message, Object shortestPath){
+    public NegativeCycleException(String message, Object shortestPath){
         super(message);
         this.shortestPath = shortestPath;
     }
