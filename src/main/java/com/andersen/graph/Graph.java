@@ -12,7 +12,7 @@ import main.java.com.andersen.exceptions.EmptyGraphException;
 import main.java.com.andersen.exceptions.NegativeCycleException;
 
 public class Graph {
-	final Map<Integer, ArrayList<MatrixElement>> matrix;
+	private final Map<Integer, ArrayList<MatrixElement>> matrix;
 	private final ArrayList<Edge> edges;
 	private final static Logger logger = Logger.getLogger(Graph.class);
 
@@ -24,6 +24,7 @@ public class Graph {
 
 	// Return shortest distance from vertex to vertex
 	public int getShortestLength(int startVertex, int finishVertex) throws NegativeCycleException, EmptyGraphException {
+		logger.info(this);
 		logger.info("Start searching for shortest length between two vertex.");
 		return new GraphHandler(matrix, edges).getShortestLength(startVertex, finishVertex);
 	}
@@ -31,6 +32,7 @@ public class Graph {
 	// Return edges list of shortest path
 	public ArrayList<Integer[]> getShortestPath(int startVertex, int finishVertex)
 			throws NegativeCycleException, EmptyGraphException {
+		logger.info(this);
 		logger.info("Start searching for shortest path between two vertex.");
 		return new GraphHandler(matrix, edges).getShortestPath(startVertex, finishVertex);
 	}
@@ -47,17 +49,25 @@ public class Graph {
 	// Return Set of vertexes.
 	public Set<Integer> getVertexes() {
 		Set<Integer> vertexes = new TreeSet<Integer>();
-		for(Map.Entry<Integer, ArrayList<MatrixElement>> entry : matrix.entrySet()) {
+		for (Map.Entry<Integer, ArrayList<MatrixElement>> entry : matrix.entrySet()) {
 			vertexes.add(new Integer(entry.getKey()));
 		}
-		
+
 		return vertexes;
 	}
 
 	@Override
 	public int hashCode() {
-		// TODO Auto-generated method stub
-		return super.hashCode();
+		int result = 17;
+		for (Edge edge : edges) {
+			result += edge.getStartVertex() * 37 + 13;
+			result += edge.getFinishVertex() * 57 + 33;
+			result += edge.getLength() * 77 + 53;
+		}
+		for (Map.Entry<Integer, ArrayList<MatrixElement>> entry : matrix.entrySet()) {
+			result += entry.getKey() * 97 + 73;
+		}
+		return result;
 	}
 
 	@Override
@@ -67,17 +77,17 @@ public class Graph {
 		}
 		Graph graph = (Graph) obj;
 		ArrayList<Integer[]> graphEdges = graph.getEdges();
-		for(Edge edge : edges) {
-			for(Integer[] edgeArr : graphEdges) {
+		for (Edge edge : edges) {
+			for (Integer[] edgeArr : graphEdges) {
 				int edgeQuantityInGraph = edgeQuantityInCurrentList(edgeArr, graphEdges);
-				if(!isExistInCurrentQuantity(edgeArr, edgeQuantityInGraph)) {
+				if (!isExistInCurrentQuantity(edgeArr, edgeQuantityInGraph)) {
 					return false;
 				}
 			}
 		}
 		Set<Integer> graphVertexes = graph.getVertexes();
-		for(Integer vertex : graphVertexes) {
-			if(!matrix.containsKey(vertex)) {
+		for (Integer vertex : graphVertexes) {
+			if (!matrix.containsKey(vertex)) {
 				return false;
 			}
 		}
@@ -87,7 +97,10 @@ public class Graph {
 	@Override
 	public String toString() {
 		StringBuilder graph = new StringBuilder();
-		graph.append("Edges:");
+		graph.append("\n" + "\n");
+		graph.append("Graph: hashCode = " + this.hashCode());
+		graph.append("\n");
+		graph.append("Edges:" + edges.size() + " pcs");
 		graph.append("\n");
 		int iterator = 0;
 		for (Edge edge : edges) {
@@ -98,36 +111,37 @@ public class Graph {
 			}
 		}
 		graph.append("\n");
-		graph.append("Vertexes:");
+		graph.append("Vertexes:" + matrix.size() + " pcs");
 		graph.append("\n");
 		for (Map.Entry<Integer, ArrayList<MatrixElement>> entry : matrix.entrySet()) {
-			graph.append(entry.getKey());
+			graph.append(entry.getKey() + ", ");
 		}
+		graph.append("\n");
 		return graph.toString();
 	}
-	
-	//Return edge quantity in current list of Edges
+
+	// Return edge quantity in current list of Edges
 	private int edgeQuantityInCurrentList(Integer[] edge, ArrayList<Integer[]> edgeList) {
 		int quantityOfEdge = 0;
-		for(Integer[] arr : edgeList) {
-			if(arr[0] == edge[0] && arr[1] == edge[1] && arr[2] == edge[2]) {
+		for (Integer[] arr : edgeList) {
+			if (arr[0] == edge[0] && arr[1] == edge[1] && arr[2] == edge[2]) {
 				quantityOfEdge++;
 			}
 		}
 		return quantityOfEdge;
 	}
-	
-	//Answer edge is exist in edge array in current quantity.
+
+	// Answer edge is exist in edge array in current quantity.
 	private boolean isExistInCurrentQuantity(Integer[] edge, int i) {
 		boolean isPresent = false;
 		int howManyEdgeInEdgeList = 0;
-		for(Edge e : edges) {
-			if(e.getStartVertex() == edge[0] && e.getFinishVertex() == edge[1] && e.getLength() == edge[2]) {
+		for (Edge e : edges) {
+			if (e.getStartVertex() == edge[0] && e.getFinishVertex() == edge[1] && e.getLength() == edge[2]) {
 				isPresent = true;
 				howManyEdgeInEdgeList++;
 			}
 		}
-		if(isPresent && howManyEdgeInEdgeList == i) {
+		if (isPresent && howManyEdgeInEdgeList == i) {
 			return true;
 		}
 		return false;

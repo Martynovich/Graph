@@ -32,10 +32,11 @@ public class GraphTest {
 				&& edgeComparator(edgesLinkingStartAndFinishVertexes.get(1), new Integer[] { 2, 3, 3 })
 				&& edgeComparator(edgesLinkingStartAndFinishVertexes.get(2), new Integer[] { 3, 6, 4 }));
 	}
-	
+
 	@Test
-	public void getShortestPathBetweenTwoEqualBranchesWithDifferentNumberOfVertexesTest() throws NegativeCycleException, EmptyGraphException {
-		Graph graph = new Graph.Builder().edge(1,2,1).edge(2,3,2).edge(3,5,3).edge(1,4,2).edge(4,5,4).build();
+	public void getShortestPathBetweenTwoEqualBranchesWithDifferentNumberOfVertexesTest()
+			throws NegativeCycleException, EmptyGraphException {
+		Graph graph = new Graph.Builder().edge(1, 2, 1).edge(2, 3, 2).edge(3, 5, 3).edge(1, 4, 2).edge(4, 5, 4).build();
 		ArrayList<Integer[]> edgesLinkingStartAndFinishVertexes = graph.getShortestPath(1, 5);
 		assertFalse(edgesLinkingStartAndFinishVertexes.isEmpty());
 		assertTrue(edgesLinkingStartAndFinishVertexes.size() == 2);
@@ -105,19 +106,38 @@ public class GraphTest {
 				&& edgeComparator(edgesLinkingStartAndFinishVertexes.get(1), new Integer[] { 2, 3, 5 })
 				&& edgeComparator(edgesLinkingStartAndFinishVertexes.get(2), new Integer[] { 3, 4, 1 }));
 	}
-	
+
+	// Test for equals.
 	@Test
 	public void equalsTest() {
-		Graph graph = new Graph.Builder().edge(1, 2, 2).edge(2, 3, 3).edge(3, 5, -4).edge(1, 4, 5).edge(4, 5, 6).build();
-		Graph graph2 = new Graph.Builder().edge(2, 3, 3).edge(1, 2, 2).edge(3, 5, -4).edge(1, 4, 5).edge(4, 5, 6).build();
-		Graph graph3 = new Graph.Builder().edge(2, 3, 3).edge(1, 2, 2).edge(1, 4, 5).edge(4, 5, 6).edge(3, 5, -4).build();
-		Graph graph4 = new Graph.Builder().edge(1, 2, 2).edge(2, 3, 3).edge(3, 5, -4).edge(1, 4, 5).edge(4, 5, 6).vertex(8).build();
+		Graph graph = new Graph.Builder().edge(1, 2, 2).edge(2, 3, 3).edge(3, 5, -4).edge(1, 4, 5).edge(4, 5, 6)
+				.build();
+		Graph graph2 = new Graph.Builder().edge(2, 3, 3).edge(1, 2, 2).edge(3, 5, -4).edge(1, 4, 5).edge(4, 5, 6)
+				.build();
+		Graph graph3 = new Graph.Builder().edge(2, 3, 3).edge(1, 2, 2).edge(1, 4, 5).edge(4, 5, 6).edge(3, 5, -4)
+				.build();
+		Graph graph4 = new Graph.Builder().edge(1, 2, 2).edge(2, 3, 3).edge(3, 5, -4).edge(1, 4, 5).edge(4, 5, 6)
+				.vertex(8).build();
 		assertTrue(graph.equals(graph));
 		assertTrue(graph.equals(graph2));
 		assertTrue(graph2.equals(graph));
 		assertTrue(graph2.equals(graph3));
 		assertTrue(graph.equals(graph3));
 		assertFalse(graph.equals(graph4));
+		assertFalse(graph.equals(null));
+	}
+
+	// Test for hashCode
+	@Test
+	public void hashCodeTest() {
+		Graph graph = new Graph.Builder().edge(1, 2, 2).edge(2, 3, 3).edge(3, 5, -4).edge(1, 4, 5).edge(4, 5, 6)
+				.build();
+		Graph graph2 = new Graph.Builder().edge(2, 3, 3).edge(1, 2, 2).edge(3, 5, -4).edge(1, 4, 5).edge(4, 5, 6)
+				.build();
+		Graph graph3 = new Graph.Builder().edge(1, 2, 2).edge(2, 3, 3).edge(3, 5, -4).edge(1, 4, 5).edge(4, 5, 6)
+				.vertex(8).build();
+		assertTrue(graph.equals(graph2) && graph.hashCode() == graph2.hashCode());
+		assertFalse(graph.equals(graph3) && graph.hashCode() == graph3.hashCode());
 	}
 
 	private boolean edgeComparator(Integer[] shortestPathElement, Integer[] etalon) {
