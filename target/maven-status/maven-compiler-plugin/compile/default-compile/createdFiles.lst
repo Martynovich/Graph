@@ -1,5 +1,8 @@
-main\java\com\andersen\praph\Edge.class
-main\java\com\andersen\praph\Graph.class
-main\java\com\andersen\praph\Graph$Builder.class
-main\java\com\andersen\praph\Main.class
-main\java\com\andersen\praph\VertexMatrixElement.class
+main\java\com\andersen\graph\MatrixElement.class
+main\java\com\andersen\graph\Graph$Builder.class
+main\java\com\andersen\graph\Graph.class
+main\java\com\andersen\graph\Edge.class
+test\java\com\andersen\graph\GraphTest.class
+main\java\com\andersen\exceptions\EmptyGraphException.class
+main\java\com\andersen\exceptions\NegativeCycleException.class
+main\java\com\andersen\graph\GraphHandler.class

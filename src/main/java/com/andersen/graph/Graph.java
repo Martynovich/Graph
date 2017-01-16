@@ -1,6 +1,7 @@
 package main.java.com.andersen.graph;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -12,21 +13,21 @@ import main.java.com.andersen.exceptions.EmptyGraphException;
 import main.java.com.andersen.exceptions.NegativeCycleException;
 
 public class Graph {
-	private final Map<Integer, ArrayList<MatrixElement>> matrix;
+	private final Set<Integer> vertexes;
 	private final ArrayList<Edge> edges;
-	private final static Logger logger = Logger.getLogger(Graph.class);
+	private static final Logger logger = Logger.getLogger(Graph.class);
 
 	// Create object Graph from Builder.
 	public Graph(Builder builder) {
-		matrix = builder.matrix;
+		vertexes = builder.vertexes;
 		edges = builder.edges;
+		logger.info(this);
 	}
 
 	// Return shortest distance from vertex to vertex
 	public int getShortestLength(int startVertex, int finishVertex) throws NegativeCycleException, EmptyGraphException {
-		logger.info(this);
 		logger.info("Start searching for shortest length between two vertex.");
-		return new GraphHandler(matrix, edges).getShortestLength(startVertex, finishVertex);
+		return new GraphHandler(vertexes, edges).getShortestLength(startVertex, finishVertex);
 	}
 
 	// Return edges list of shortest path
@@ -34,25 +35,20 @@ public class Graph {
 			throws NegativeCycleException, EmptyGraphException {
 		logger.info(this);
 		logger.info("Start searching for shortest path between two vertex.");
-		return new GraphHandler(matrix, edges).getShortestPath(startVertex, finishVertex);
+		return new GraphHandler(vertexes, edges).getShortestPath(startVertex, finishVertex);
 	}
 
 	// Return ArrayList of edges.
 	public ArrayList<Integer[]> getEdges() {
-		ArrayList<Integer[]> edges = new ArrayList<Integer[]>();
-		for (Edge edge : this.edges) {
-			edges.add(new Integer[] { edge.getStartVertex(), edge.getFinishVertex(), edge.getLength() });
+		ArrayList<Integer[]> allEdges = new ArrayList<>();
+		for (Edge edge : edges) {
+			allEdges.add(new Integer[] { edge.getStartVertex(), edge.getFinishVertex(), edge.getLength() });
 		}
-		return edges;
+		return allEdges;
 	}
 
 	// Return Set of vertexes.
 	public Set<Integer> getVertexes() {
-		Set<Integer> vertexes = new TreeSet<Integer>();
-		for (Map.Entry<Integer, ArrayList<MatrixElement>> entry : matrix.entrySet()) {
-			vertexes.add(new Integer(entry.getKey()));
-		}
-
 		return vertexes;
 	}
 
@@ -64,8 +60,9 @@ public class Graph {
 			result += edge.getFinishVertex() * 57 + 33;
 			result += edge.getLength() * 77 + 53;
 		}
-		for (Map.Entry<Integer, ArrayList<MatrixElement>> entry : matrix.entrySet()) {
-			result += entry.getKey() * 97 + 73;
+		Iterator<Integer> iterator = vertexes.iterator();
+		while (iterator.hasNext()) {
+			result += iterator.next() * 97 + 73;
 		}
 		return result;
 	}
@@ -77,7 +74,7 @@ public class Graph {
 		}
 		Graph graph = (Graph) obj;
 		ArrayList<Integer[]> graphEdges = graph.getEdges();
-		for (Edge edge : edges) {
+		for (int i = 0; i < edges.size(); i++) {
 			for (Integer[] edgeArr : graphEdges) {
 				int edgeQuantityInGraph = edgeQuantityInCurrentList(edgeArr, graphEdges);
 				if (!isExistInCurrentQuantity(edgeArr, edgeQuantityInGraph)) {
@@ -87,7 +84,7 @@ public class Graph {
 		}
 		Set<Integer> graphVertexes = graph.getVertexes();
 		for (Integer vertex : graphVertexes) {
-			if (!matrix.containsKey(vertex)) {
+			if (!vertexes.contains(vertex)) {
 				return false;
 			}
 		}
@@ -111,10 +108,11 @@ public class Graph {
 			}
 		}
 		graph.append("\n");
-		graph.append("Vertexes:" + matrix.size() + " pcs");
+		graph.append("Vertexes:" + vertexes.size() + " pcs");
 		graph.append("\n");
-		for (Map.Entry<Integer, ArrayList<MatrixElement>> entry : matrix.entrySet()) {
-			graph.append(entry.getKey() + ", ");
+		Iterator<Integer> it = vertexes.iterator();
+		while (it.hasNext()) {
+			graph.append(it.next() + ", ");
 		}
 		graph.append("\n");
 		return graph.toString();
@@ -149,11 +147,12 @@ public class Graph {
 
 	// Builder class constructor.
 	public static class Builder {
-		Map<Integer, ArrayList<MatrixElement>> matrix = new TreeMap<Integer, ArrayList<MatrixElement>>();
-		ArrayList<Edge> edges = new ArrayList<Edge>();
+		private Set<Integer> vertexes = new TreeSet<>();
+		private ArrayList<Edge> edges = new ArrayList<>();
 
 		// Create graph's vertex and add it to Map vertexMatrix as a key.
 		public Builder vertex(int vertexNumber) {
+			
 			addVertex(vertexNumber);
 			return this;
 		}
@@ -170,8 +169,8 @@ public class Graph {
 
 		// Add vertex to graph.
 		private void addVertex(int vertexNumber) {
-			if (!matrix.containsKey(vertexNumber)) {
-				matrix.put(vertexNumber, new ArrayList<MatrixElement>());
+			if (!vertexes.contains(vertexNumber)) {
+				vertexes.add(vertexNumber);
 			}
 		}
 

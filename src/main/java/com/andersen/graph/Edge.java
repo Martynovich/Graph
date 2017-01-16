@@ -33,7 +33,6 @@ class Edge {
 
 	@Override
 	public String toString() {
-		String s = "(" + startVertex + " " + finishVertex + " " + length + ")";
-		return s;
+		return "(" + startVertex + " " + finishVertex + " " + length + ")";
 	}
 }

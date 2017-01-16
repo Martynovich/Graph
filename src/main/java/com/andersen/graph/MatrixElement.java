@@ -4,9 +4,8 @@ import java.util.ArrayList;
 
 public class MatrixElement {
 	 private int distanñeFromStartVertex = 1000*1000;
-	 private int previousNearestVertex = 1000*1000;
 	 private int edgesQuantity;
-	 private ArrayList<Edge> pathToStart = new ArrayList<Edge>();
+	 private ArrayList<Edge> pathToStart = new ArrayList<>();
 	 
 	 MatrixElement(int edgesQuantity){
 		 this.edgesQuantity = edgesQuantity;
@@ -19,25 +18,12 @@ public class MatrixElement {
 		this.distanñeFromStartVertex = distanñeFromStartVertex;
 	}
 	
-	int getPreviousNearestVertex() {
-		return previousNearestVertex;
-	}
-	void setPreviousNearestVertex(int previousNearestVertex) {
-		previousNearestVertex = previousNearestVertex;
-	}
 	int getEdgesQuantity() {
 		return edgesQuantity;
 	}
 	void setEdgesQuantity(int edgesQuantity) {
 		this.edgesQuantity = edgesQuantity;
 	}
-//	Edge getEdgeToPreviousNearestVertex() {
-//		return edgeToPreviousNearestVertex;
-//	}
-
-//	void setEdgeToPreviousNearestVertex(Edge edgeToPreviousNearestVertex) {
-//		this.edgeToPreviousNearestVertex = edgeToPreviousNearestVertex;
-//	}
 
 	public ArrayList<Edge> getPathToStart() {
 		return pathToStart;

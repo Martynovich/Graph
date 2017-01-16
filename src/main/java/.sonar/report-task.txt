@@ -1,0 +1,5 @@
+projectKey=Graph
+serverUrl=http://localhost:9000
+dashboardUrl=http://localhost:9000/dashboard/index/Graph
+ceTaskId=AVmmopeihfnFzeeJtM4D
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AVmmopeihfnFzeeJtM4D

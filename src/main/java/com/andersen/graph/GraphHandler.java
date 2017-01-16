@@ -1,7 +1,9 @@
 package main.java.com.andersen.graph;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
@@ -10,12 +12,12 @@ import main.java.com.andersen.exceptions.EmptyGraphException;
 import main.java.com.andersen.exceptions.NegativeCycleException;
 
 public class GraphHandler {
-	private Map<Integer, ArrayList<MatrixElement>> matrix = new TreeMap<Integer, ArrayList<MatrixElement>>();
-	private final ArrayList<Edge> edges = new ArrayList<Edge>();
+	private Map<Integer, ArrayList<MatrixElement>> matrix = new TreeMap<>();
+	private final ArrayList<Edge> edges = new ArrayList<>();
 	private final static Logger logger = Logger.getLogger(Graph.class);
 
-	GraphHandler(Map<Integer, ArrayList<MatrixElement>> matrix, ArrayList<Edge> edges) {
-		setMatrix(matrix);
+	GraphHandler(Set<Integer> vertexes, ArrayList<Edge> edges) {
+		setMatrix(vertexes);
 		setEdges(edges);
 	}
 
@@ -31,7 +33,7 @@ public class GraphHandler {
 		findAllShortestDistInMatr(startVertex);
 		int shortestLength = findShortestWayFromSartToCurrent(finishVertex).getDistanñeFromStartVertex();
 		if (isNegativeCycle()) {
-			throw new NegativeCycleException("Is negativ cicle in graph", new Integer(shortestLength));
+			throw new NegativeCycleException("Is negativ cicle in graph", shortestLength);
 		}
 		return shortestLength;
 	}
@@ -48,7 +50,7 @@ public class GraphHandler {
 		initMatrix(startVertex);
 		findAllShortestDistInMatr(startVertex);
 		ArrayList<Edge> shortestPath = findShortestWayFromSartToCurrent(finishVertex).getPathToStart();
-		ArrayList<Integer[]> shortestPathIntArr = new ArrayList<Integer[]>();
+		ArrayList<Integer[]> shortestPathIntArr = new ArrayList<>();
 		for (int i = 0; i < shortestPath.size(); i++) {
 			Integer startVertexInt = shortestPath.get(i).getStartVertex();
 			Integer finishVertexInt = shortestPath.get(i).getFinishVertex();
@@ -82,7 +84,7 @@ public class GraphHandler {
 	private void findAllShortestDistInMatr(int startVertex) {
 		logger.info("Filling matrix with shortest distances to start vertex and linking edges.Start vertex - "
 				+ startVertex);
-		for (int i = 1; i <= matrix.size(); i++) {// Add one repeat
+		for (int i = 1; i <= matrix.size(); i++) {
 			for (Edge edge : edges) {
 				MatrixElement currentElement = matrix.get(edge.getFinishVertex()).get(i);
 				MatrixElement previousElement = matrix.get(edge.getStartVertex()).get(i - 1);
@@ -92,9 +94,8 @@ public class GraphHandler {
 						+ edge.getLength() && previousElement.getDistanñeFromStartVertex() != 1000 * 1000) {
 					currentElement.setDistanñeFromStartVertex(
 							previousElement.getDistanñeFromStartVertex() + edge.getLength());
-					currentElement.setPreviousNearestVertex(edge.getStartVertex());
 					currentElement.setEdgesQuantity(previousElement.getEdgesQuantity() + 1);
-					newPathToStart = new ArrayList<Edge>(previousElement.getPathToStart());
+					newPathToStart = new ArrayList<>(previousElement.getPathToStart());
 					newPathToStart.add(edge);
 					currentElement.setPathToStart(newPathToStart);
 				}
@@ -102,8 +103,7 @@ public class GraphHandler {
 						.getDistanñeFromStartVertex()
 						&& currentRawPreviousElement.getDistanñeFromStartVertex() != 1000 * 1000) {
 					currentElement.setDistanñeFromStartVertex(currentRawPreviousElement.getDistanñeFromStartVertex());
-					currentElement.setPreviousNearestVertex(currentRawPreviousElement.getPreviousNearestVertex());
-					newPathToStart = new ArrayList<Edge>(currentRawPreviousElement.getPathToStart());
+					newPathToStart = new ArrayList<>(currentRawPreviousElement.getPathToStart());
 					currentElement.setPathToStart(newPathToStart);
 				}
 			}
@@ -161,9 +161,10 @@ public class GraphHandler {
 	}
 
 	// Create copy of graph matrix.
-	private void setMatrix(Map<Integer, ArrayList<MatrixElement>> matrix) {
-		for (Map.Entry<Integer, ArrayList<MatrixElement>> entry : matrix.entrySet()) {
-			this.matrix.put(new Integer(entry.getKey()), new ArrayList<MatrixElement>());
+	private void setMatrix(Set<Integer> vertexes) {
+		Iterator<Integer> iterator = vertexes.iterator();
+		while (iterator.hasNext()) {
+			this.matrix.put(new Integer(iterator.next()), new ArrayList<MatrixElement>());
 		}
 	}
 
