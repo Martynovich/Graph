@@ -2,9 +2,7 @@ package main.java.com.andersen.graph;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
@@ -152,7 +150,7 @@ public class Graph {
 
 		// Create graph's vertex and add it to Map vertexMatrix as a key.
 		public Builder vertex(int vertexNumber) {
-			
+
 			addVertex(vertexNumber);
 			return this;
 		}

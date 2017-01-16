@@ -175,5 +175,4 @@ public class GraphHandler {
 			this.edges.add(copyEdge);
 		}
 	}
-
 }
