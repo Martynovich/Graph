@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 import main.java.com.andersen.exceptions.EmptyGraphException;
 import main.java.com.andersen.exceptions.NegativeCycleException;
 
-public class Graph {
+public final class Graph {
 	private final Set<Integer> vertexes;
 	private final ArrayList<Edge> edges;
 	private static final Logger logger = Logger.getLogger(Graph.class);
