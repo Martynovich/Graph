@@ -11,7 +11,9 @@ import main.java.com.andersen.graph.Graph;
 
 public class GraphTest {
 
-	// Finding shortest way length.
+	/**
+	 * Check shortest way length.
+	 */
 	@Test
 	public void testGetShortestLength() throws NegativeCycleException, EmptyGraphException {
 		Graph graph = new Graph.Builder().edge(1, 2, 10).edge(2, 3, 5).edge(3, 4, 5).edge(4, 5, 4).build();
@@ -20,7 +22,9 @@ public class GraphTest {
 		assertFalse(25 == shortestDistancesBetweenVertexOneAndVertexFive);
 	}
 
-	// Finding shortest path between three current.
+	/**
+	 * Check shortest path between three current.
+	 */
 	@Test
 	public void getShortestPathTest() throws NegativeCycleException, EmptyGraphException {
 		Graph graph = new Graph.Builder().edge(1, 2, 2).edge(2, 3, 3).edge(3, 6, 4).edge(1, 4, 2).edge(4, 6, 8)
@@ -33,6 +37,10 @@ public class GraphTest {
 				&& edgeComparator(edgesLinkingStartAndFinishVertexes.get(2), new Integer[] { 3, 6, 4 }));
 	}
 
+	/**
+	 * Check shortest path between two equals in length but different in edges
+	 * quantity.
+	 */
 	@Test
 	public void getShortestPathBetweenTwoEqualBranchesWithDifferentNumberOfVertexesTest()
 			throws NegativeCycleException, EmptyGraphException {
@@ -44,7 +52,9 @@ public class GraphTest {
 				&& edgeComparator(edgesLinkingStartAndFinishVertexes.get(1), new Integer[] { 4, 5, 4 }));
 	}
 
-	// Finding shortest path between two current.Graph has negative edges.
+	/**
+	 * Check shortest path between two current.Graph has negative edges.
+	 */
 	@Test
 	public void getShortestPathWithNegativEdgesTest() throws NegativeCycleException, EmptyGraphException {
 		Graph graph = new Graph.Builder().edge(1, 2, 4).edge(2, 3, 5).edge(3, 5, -6).edge(1, 4, 2).edge(4, 5, 3)
@@ -57,21 +67,27 @@ public class GraphTest {
 				&& edgeComparator(edgesLinkingStartAndFinishVertexes.get(2), new Integer[] { 3, 5, -6 }));
 	}
 
-	// Check empty graph. Waiting for EmptyGraphException.
+	/**
+	 * Check empty graph. Waiting for EmptyGraphException.
+	 */
 	@Test(expected = EmptyGraphException.class)
 	public void emptyGraphTest() throws NegativeCycleException, EmptyGraphException {
 		Graph graph = new Graph.Builder().build();
 		graph.getShortestPath(1, 2);
 	}
 
-	// Check for vertices.
+	/**
+	 * Check graph. Waiting for IllegalArgumentException.
+	 */
 	@Test(expected = IllegalArgumentException.class)
 	public void absentVertexTest() throws NegativeCycleException, EmptyGraphException {
 		Graph graph = new Graph.Builder().edge(1, 2, 3).edge(2, 3, 4).build();
 		graph.getShortestPath(1, 8);
 	}
 
-	// Check distance from vertex to itself.
+	/**
+	 * Check distance from vertex to itself.
+	 */
 	public void vertexPathToItself() throws NegativeCycleException, EmptyGraphException {
 		Graph graph = new Graph.Builder().edge(1, 1, 3).edge(1, 1, 4).build();
 		int length = graph.getShortestLength(1, 1);
@@ -79,14 +95,18 @@ public class GraphTest {
 		assertTrue(length == 0 && path == null);
 	}
 
-	// Check distance from vertex to itself.
+	/**
+	 * Check distance from vertex to itself when exist negative cycle.
+	 */
 	@Test(expected = NegativeCycleException.class)
 	public void vertexPathToItselfNegativLoop() throws NegativeCycleException, EmptyGraphException {
 		Graph graph = new Graph.Builder().edge(1, 1, -3).edge(1, 1, -4).build();
 		ArrayList<Integer[]> path = graph.getShortestPath(1, 1);
 	}
 
-	// Linking edge between two vertexes is absent.
+	/**
+	 * Check graph in which linking edge between two vertices is absent.
+	 */
 	@Test
 	public void linkingEdgeIsAbsent() throws NegativeCycleException, EmptyGraphException {
 		Graph graph = new Graph.Builder().edge(1, 2, -5).edge(2, 3, -6).vertex(4).build();
@@ -94,7 +114,9 @@ public class GraphTest {
 		assertTrue(graph.getShortestPath(1, 4).isEmpty());
 	}
 
-	// Repeating edges between two vertexes.
+	/**
+	 * Check graph in which repeating edges between two vertexes
+	 */
 	@Test
 	public void repeatingEdgesBetweeTwoVertexesTest() throws NegativeCycleException, EmptyGraphException {
 		Graph graph = new Graph.Builder().edge(1, 2, 2).edge(1, 2, 3).edge(2, 3, 5).edge(2, 3, 6).edge(3, 4, 1).build();
@@ -107,7 +129,9 @@ public class GraphTest {
 				&& edgeComparator(edgesLinkingStartAndFinishVertexes.get(2), new Integer[] { 3, 4, 1 }));
 	}
 
-	// Test for equals.
+	/**
+	 * Test for equals.
+	 */
 	@Test
 	public void equalsTest() {
 		Graph graph = new Graph.Builder().edge(1, 2, 2).edge(2, 3, 3).edge(3, 5, -4).edge(1, 4, 5).edge(4, 5, 6)
@@ -127,7 +151,9 @@ public class GraphTest {
 		assertFalse(graph.equals(null));
 	}
 
-	// Test for hashCode
+	/**
+	 * Test for hashCode
+	 */
 	@Test
 	public void hashCodeTest() {
 		Graph graph = new Graph.Builder().edge(1, 2, 2).edge(2, 3, 3).edge(3, 5, -4).edge(1, 4, 5).edge(4, 5, 6)
