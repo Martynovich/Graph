@@ -39,8 +39,6 @@ public class GraphHandler {
 	 *            Graph's vertices.
 	 * @param edges
 	 *            Graph's edges.
-	 * @see matrix.
-	 * @see edges
 	 */
 	GraphHandler(ImmutableSet<Integer> vertices, ImmutableList<Edge> edges) {
 		setMatrix(vertices);
@@ -124,7 +122,6 @@ public class GraphHandler {
 	 * @param startVertex
 	 *            Start vertex for finding shortest distances and paths between
 	 *            it and all other vertices.
-	 * @see matrix
 	 */
 	private void initMatrix(int startVertex) {
 		logger.info("Init matrix, start vertex:" + startVertex);
@@ -254,7 +251,6 @@ public class GraphHandler {
 	 * 
 	 * @param vertexes
 	 *            Set of graph's vertices.
-	 * @see matrix
 	 */
 	private void setMatrix(Set<Integer> vertexes) {
 		Iterator<Integer> iterator = vertexes.iterator();

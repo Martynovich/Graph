@@ -41,7 +41,6 @@ public class MatrixElement {
 	}
 
 	/**
-	 * @param Distance
 	 *            from start vertex to vertex which corresponds with current
 	 *            matrixElement.
 	 */

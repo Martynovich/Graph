@@ -253,8 +253,6 @@ public final class Graph {
 		 * @param length
 		 * @return Builder object in which vertices have new vertices and new
 		 *         edge.
-		 * @see vertices
-		 * @see edges
 		 */
 		public Builder edge(int startVertex, int finishVertex, int length) {
 			Edge edge = new Edge(startVertex, finishVertex, length);
@@ -270,7 +268,6 @@ public final class Graph {
 		 * 
 		 * @param vertexNumber
 		 *            Number of adding vertex.
-		 * @see vertices
 		 */
 		private void addVertex(int vertexNumber) {
 			if (!vertices.contains(vertexNumber)) {
