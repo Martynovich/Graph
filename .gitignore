@@ -1,3 +1,5 @@
-/.settings
-/target/
-kolbasa
+.settings/
+target/
+.classpath
+.project
+.idea/

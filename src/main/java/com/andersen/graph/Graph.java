@@ -236,7 +236,6 @@ public final class Graph {
 		 * 
 		 * @param vertexNumber
 		 * @return Builder object in which vertices have new vertex.
-		 * @see vertices
 		 */
 		public Builder vertex(int vertexNumber) {
 
